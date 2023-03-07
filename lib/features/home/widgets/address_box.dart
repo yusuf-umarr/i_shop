@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i_shop_riverpod/features/auth/view_model/auth_view_model.dart';
 
+class AddressBox extends ConsumerWidget {
+   AddressBox({Key? key}) : super(key: key);
 
-class AddressBox extends StatelessWidget {
-  const AddressBox({Key? key}) : super(key: key);
+  String userAddre = '';
 
   @override
-  Widget build(BuildContext context) {
-    // final user = Provider.of<AuthViewModel>(context).user;
+  Widget build(BuildContext context, WidgetRef ref) {
+   userAddre= ref.watch(authViewModel).user.address!;
 
     return Container(
       height: 40,
@@ -30,7 +33,7 @@ class AddressBox extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.only(left: 5),
               child: Text(
-                'Delivery to {user.name} - {user.address}',
+                'Delivery to $userAddre',
                 style: const TextStyle(
                   fontWeight: FontWeight.w500,
                 ),

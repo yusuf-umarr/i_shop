@@ -29,6 +29,22 @@ Future<List<File>> pickImages() async {
   return images;
 }
 
+Future<File?> pickSingleImage() async {
+  File? images;
+  try {
+    var result = await FilePicker.platform.pickFiles(
+      type: FileType.image,
+    );
+    if (result != null ) {
+    
+
+      images = File(result.files.single.path!);
+    }
+  } catch (e) {
+    debugPrint(e.toString());
+  }
+  return images;
+}
 
 class Success {
   int? code;
@@ -36,6 +52,7 @@ class Success {
 
   Success({this.code, this.response});
 }
+
 class Failure {
   int? code;
   Object? errorResponse;
@@ -43,10 +60,9 @@ class Failure {
   Failure({this.code, this.errorResponse});
 }
 
-class UserError{
+class UserError {
   int? code;
   Object? message;
 
   UserError({this.code, this.message});
-
 }

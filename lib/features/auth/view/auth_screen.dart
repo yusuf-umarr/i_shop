@@ -1,22 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:i_shop_riverpod/common_widget/custom_button.dart';
-import 'package:i_shop_riverpod/common_widget/custom_textfield.dart';
 import 'package:i_shop_riverpod/core/constants/global_variables.dart';
-import 'package:i_shop_riverpod/core/constants/utils.dart';
 import 'package:i_shop_riverpod/core/utils/enums.dart';
-import 'package:i_shop_riverpod/features/auth/model/user_model.dart';
-import 'package:i_shop_riverpod/features/auth/view_model/auth_view_model.dart';
-import 'package:i_shop_riverpod/features/auth/view_model/auth_view_state.dart';
-
-enum Auth {
-  signin,
-  signup,
-}
+import 'package:i_shop_riverpod/features/auth/widget/signin_consumer.dart';
+import 'package:i_shop_riverpod/features/auth/widget/signup_consumer.dart';
+import 'package:i_shop_riverpod/features/cart/cart_view_model/notifiers/cart_notifier.dart';
 
 class AuthScreen extends ConsumerStatefulWidget {
+  final String prevPage;
   static const String routeName = '/auth-screen';
-  const AuthScreen({Key? key}) : super(key: key);
+  const AuthScreen( {Key? key,required this.prevPage,}) : super(key: key);
 
   @override
   ConsumerState<AuthScreen> createState() => _AuthScreenState();
@@ -24,42 +17,30 @@ class AuthScreen extends ConsumerStatefulWidget {
 
 class _AuthScreenState extends ConsumerState<AuthScreen> {
   Auth _auth = Auth.signup;
-  final _signUpFormKey = GlobalKey<FormState>();
-  final _signInFormKey = GlobalKey<FormState>();
-  // final AuthService authService = AuthService();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _nameController = TextEditingController();
+  final signUpFormKey = GlobalKey<FormState>();
+  final signInFormKey = GlobalKey<FormState>();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
 
   @override
   void dispose() {
     super.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
-    _nameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    nameController.dispose();
   }
 
   bool isWait = false;
 
   @override
   Widget build(BuildContext context) {
-    // ref.listen<AuthUserState>(authViewModel, (prev, state) {
-    //   if (state.loginState == LoginState.error) {
-    //     showSnackBar(context, state.message.toString());
-    //   } else if (state.loginState == LoginState.success) {
-    //     showSnackBar(context, state.message.toString());
+    final cartState = ref.watch(cartNotifier);
+    var totalAmount = 0.0;
+    cartState.cartProducts
+        .map((e) => totalAmount += e.quantity! * e.product!.price!.toDouble())
+        .toList();
 
-    //     // Timer(Duration(milliseconds: 300), () {});
-    //   }
-
-    //   if (state.registerState == RegisterState.error) {
-    //     showSnackBar(context, state.message.toString());
-    //   } else if (state.registerState == RegisterState.success) {
-    //     showSnackBar(context, state.message.toString());
-
-    //     // Timer(Duration(milliseconds: 300), () {});
-    //   }
-    // });
     return Scaffold(
       backgroundColor: GlobalVariables.greyBackgroundCOlor,
       body: SafeArea(
@@ -100,87 +81,8 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                   ),
                 ),
                 if (_auth == Auth.signup)
-                  Consumer(builder: (context, ref, child) {
-                    ref.listen<AuthUserState>(authViewModel, (prev, state) {
-                      if (state.registerState == RegisterState.error) {
-                        showSnackBar(context, state.message.toString());
-                      } else if (state.registerState == RegisterState.success) {
-                        showSnackBar(context, state.message.toString());
-
-                        // Timer(Duration(milliseconds: 300), () {});
-                      }
-                    });
-                    return Container(
-                      padding: const EdgeInsets.all(8),
-                      color: GlobalVariables.backgroundColor,
-                      child: Form(
-                        key: _signUpFormKey,
-                        child: Column(
-                          children: [
-                            CustomTextField(
-                              controller: _nameController,
-                              hintText: 'Name',
-                            ),
-                            const SizedBox(height: 10),
-                            CustomTextField(
-                              controller: _emailController,
-                              hintText: 'Email',
-                            ),
-                            const SizedBox(height: 10),
-                            CustomTextField(
-                                controller: _passwordController,
-                                hintText: 'Password',
-                                obscureText: true),
-                            const SizedBox(height: 10),
-                            Consumer(builder: (context, val, _) {
-                              final authState = ref.watch(authViewModel);
-
-                              return CustomButton(
-                                text: authState.loginState == LoginState.idle
-                                    ? 'Sign Up'
-                                    : authState.loginState == LoginState.loading
-                                        ? 'Please wait'
-                                        : "Sign Sign Up",
-                                onTap: () async {
-                                  FocusScope.of(context).unfocus();
-
-                                  if (_signUpFormKey.currentState!.validate()) {
-                                    UserModel model = UserModel(
-                                        name: _nameController.text,
-                                        email: _emailController.text,
-                                        password: _passwordController.text);
-
-                                    ref
-                                        .read(authViewModel.notifier)
-                                        .userRegister(model);
-                                  }
-                                },
-                              );
-
-                              // CustomButton(
-                              //   text: isWait ? "please wait..." : 'Sign Up',
-                              //   onTap: () async {
-                              //     setState(() {
-                              //       isWait = true;
-                              //     });
-
-                              //     Timer(const Duration(seconds: 3), () {
-                              //       setState(() {
-                              //         isWait = false;
-                              //       });
-                              //     });
-                              //     FocusScope.of(context).unfocus();
-                              //     if (_signUpFormKey.currentState!.validate()) {
-
-                              //     }
-                              //   },
-                              // );
-                            })
-                          ],
-                        ),
-                      ),
-                    );
-                  }),
+                  signUpConsumer(signUpFormKey, nameController, emailController,
+                      passwordController, totalAmount, widget.prevPage,),
                 ListTile(
                   tileColor: _auth == Auth.signin
                       ? GlobalVariables.backgroundColor
@@ -203,63 +105,8 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                   ),
                 ),
                 if (_auth == Auth.signin)
-                  Consumer(builder: (context, ref,child) {
-                    ref.listen<AuthUserState>(authViewModel, (prev, state) {
-                      if (state.loginState == LoginState.error) {
-                        showSnackBar(context, state.message.toString());
-                      } else if (state.loginState == LoginState.success) {
-                        showSnackBar(context, state.message.toString());
-
-                        // Timer(Duration(milliseconds: 300), () {});
-                      }
-                    });
-                    return Container(
-                      padding: const EdgeInsets.all(8),
-                      color: GlobalVariables.backgroundColor,
-                      child: Form(
-                        key: _signInFormKey,
-                        child: Column(
-                          children: [
-                            CustomTextField(
-                              controller: _emailController,
-                              hintText: 'Email',
-                            ),
-                            const SizedBox(height: 10),
-                            CustomTextField(
-                                controller: _passwordController,
-                                hintText: 'Password',
-                                obscureText: false),
-                            const SizedBox(height: 10),
-                            Consumer(builder: (context, val, _) {
-                              final authState = ref.watch(authViewModel);
-                              return CustomButton(
-                                text: authState.loginState == LoginState.idle
-                                    ? 'Sign In'
-                                    : authState.loginState == LoginState.loading
-                                        ? 'Please wait'
-                                        : "Sign In",
-                                onTap: () async {
-                                  FocusScope.of(context).unfocus();
-                                  // var provider = Provider.of<AuthViewModel>(context,
-                                  //     listen: false);
-
-                                  if (_signInFormKey.currentState!.validate()) {
-                                    UserModel model = UserModel(
-                                        email: _emailController.text,
-                                        password: _passwordController.text);
-
-                                    ref
-                                        .read(authViewModel.notifier)
-                                        .userLogin(model);
-                                  }
-                                },
-                              );
-                            })
-                          ],
-                        ),
-                      ),
-                    );
-                  }),
+                  signInConsumer(signInFormKey, emailController,
+                      passwordController, totalAmount, widget.prevPage,),
               ],
             ),
           ),

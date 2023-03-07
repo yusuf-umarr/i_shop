@@ -8,12 +8,18 @@ class AuthUserState {
   final String? message;
   final LoginState loginState;
   final RegisterState registerState;
+  final UserAddressState userAddessState;
+  final UserDataState userDataState;
+  final UpdateUserState updateUserState;
   AuthUserState({
     required this.loadState,
     required this.user,
     required this.message,
     required this.loginState,
     required this.registerState,
+    required this.userAddessState,
+    required this.userDataState,
+    required this.updateUserState,
   });
 
   factory AuthUserState.initial() {
@@ -33,8 +39,17 @@ class AuthUserState {
       message: null,
       loginState: LoginState.idle,
       registerState: RegisterState.idle,
+      userAddessState: UserAddressState.idle,
+      userDataState: UserDataState.idle,
+      updateUserState: UpdateUserState.idle,
     );
   }
+
+
+
+
+
+
 
 
 
@@ -44,6 +59,9 @@ class AuthUserState {
     String? message,
     LoginState? loginState,
     RegisterState? registerState,
+    UserAddressState? userAddessState,
+    UserDataState? userDataState,
+    UpdateUserState? updateUserState,
   }) {
     return AuthUserState(
       loadState: loadState ?? this.loadState,
@@ -51,6 +69,9 @@ class AuthUserState {
       message: message ?? this.message,
       loginState: loginState ?? this.loginState,
       registerState: registerState ?? this.registerState,
+      userAddessState: userAddessState ?? this.userAddessState,
+      userDataState: userDataState ?? this.userDataState,
+      updateUserState: updateUserState ?? this.updateUserState,
     );
   }
 }

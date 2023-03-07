@@ -1,5 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i_shop_riverpod/common_widget/cart_box.dart';
+import 'package:i_shop_riverpod/common_widget/shimmer.dart';
 import 'package:i_shop_riverpod/core/constants/global_variables.dart';
 import 'package:i_shop_riverpod/core/utils/enums.dart';
 import 'package:i_shop_riverpod/features/product_category/view_model/category_view_model.dart';
@@ -18,19 +21,44 @@ class ProductCategoryScreen extends ConsumerStatefulWidget {
       _ProductCategoryScreenState();
 }
 
-class _ProductCategoryScreenState extends ConsumerState<ProductCategoryScreen> {
+class _ProductCategoryScreenState extends ConsumerState<ProductCategoryScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _categoryController;
+  late Animation<double> _animationCategory;
   @override
   void initState() {
     super.initState();
     fetchCategoryProducts();
+    _setupCategoryAnimation();
+  }
+
+  @override
+  void dispose() {
+    _categoryController.dispose();
+    super.dispose();
+  }
+
+  void _setupCategoryAnimation() {
+    _categoryController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 400));
+
+    _animationCategory = CurvedAnimation(
+        parent: _categoryController, curve: const Interval(0.0, 1));
   }
 
   fetchCategoryProducts() async {
-    ref.read(categoryViewModel.notifier).fetchProductCategory(widget.category);
+    if (widget.category == "All") {
+      ref.read(categoryViewModel.notifier).fetchAllProductCategory();
+    } else {
+      ref
+          .read(categoryViewModel.notifier)
+          .fetchProductCategory(widget.category);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(50),
@@ -43,98 +71,155 @@ class _ProductCategoryScreenState extends ConsumerState<ProductCategoryScreen> {
           title: Text(
             widget.category,
             style: const TextStyle(
-              color: Colors.black,
+              color: Colors.white,
             ),
           ),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(top: defaultPadding / 2),
+              child: CartBox(),
+            )
+          ],
         ),
       ),
       body: Consumer(builder: (context, ref, _) {
         final categoryState = ref.watch(categoryViewModel);
         if (categoryState.loadState == NetworkState.loading) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
+          return productCategoryShimmer(size: size);
         } else if (categoryState.loadState == NetworkState.error) {
-          return const Center(
-            child: Text("An error occurred"),
+          return Center(
+            child: Text(categoryState.message.toString()),
           );
         }
-        return Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-              alignment: Alignment.topLeft,
-              child: Text(
-                'Keep shopping for ${widget.category}',
-                style: const TextStyle(
-                  fontSize: 20,
-                ),
-              ),
-            ),
-            Expanded(
-              // height: 170,
-              child: GridView.builder(
-                padding: const EdgeInsets.only(left: 15),
-                itemCount: categoryState.productCategory.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2, //no of item to display in row
-                ),
-                itemBuilder: (context, index) {
-                  final product = categoryState.productCategory[index];
-                  return GestureDetector(
-                    onTap: () {
-                      // homeViewModel.setSelectedProduct(product);
-                      Navigator.pushNamed(
-                        context,
-                        ProductDetailScreen.routeName,
-                        arguments: product,
-                      );
-                    },
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: 130,
-                          child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              border: Border.all(
-                                color: GlobalVariables.primaryColor
-                                    .withOpacity(0.5),
-                                width: 0.5,
-                              ),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(15),
-                                child: Image.network(
-                                  product.images![0],
+        return AnimatedBuilder(
+            animation: Listenable.merge([_categoryController]),
+            builder: (context, _) {
+              if (categoryState.loadState == NetworkState.success) {
+                _categoryController.forward();
+              }
+              return Column(
+                children: [
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: defaultPadding),
+                    alignment: Alignment.center,
+                    child: Text(
+                      'Shopping for ${widget.category} Category',
+                      style: const TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: GridView.builder(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: size.width * 0.05),
+                      itemCount: categoryState.productCategory.length,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: size.width * 0.06,
+                        mainAxisSpacing: size.height * 0.03,
+                        mainAxisExtent: size.height * 0.32,
+                      ),
+                      itemBuilder: (context, index) {
+                        final product = categoryState.productCategory[index];
+                        return Container(
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.circular(defaultPadding),
+                              color: GlobalVariables.greyBackgroundCOlor),
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Positioned(
+                                top: 50 * (1 - _animationCategory.value),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                      context,
+                                      ProductDetailScreen.routeName,
+                                      arguments: product,
+                                    );
+                                  },
+                                  child: Column(
+                                    children: [
+                                      SizedBox(
+                                        height: defaultPadding,
+                                      ),
+                                      CachedNetworkImage(
+                                        imageUrl: product.images![0],
+                                        fit: BoxFit.contain,
+                                        height: 130,
+                                        width: 150,
+                                      ),
+                                      Container(
+                                        width: size.width * 0.4,
+                                        height: size.height * 0.1,
+                                        child: Stack(
+                                          children: [
+                                            Container(),
+                                            Positioned(
+                                              bottom: 1,
+                                              left: 5,
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    product.name!,
+                                                    maxLines: 1,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w600),
+                                                  ),
+                                                  SizedBox(
+                                                    height: defaultPadding / 3,
+                                                  ),
+                                                  Text(
+                                                    "\$${product.price}",
+                                                    maxLines: 1,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Positioned(
+                                              bottom: 0,
+                                              right: 0,
+                                              child: FloatingActionButton.small(
+                                                heroTag: "$index",
+                                                backgroundColor: Colors.white,
+                                                onPressed: () {
+                                                  Navigator.pushNamed(
+                                                    context,
+                                                    ProductDetailScreen
+                                                        .routeName,
+                                                    arguments: product,
+                                                  );
+                                                },
+                                                child:
+                                                    Icon(Icons.arrow_forward),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
+                            ],
                           ),
-                        ),
-                        Container(
-                          alignment: Alignment.center,
-                          padding: const EdgeInsets.only(
-                            left: 0,
-                            top: 5,
-                            right: 15,
-                          ),
-                          child: Text(
-                            product.name!,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
-            ),
-          ],
-        );
+                  ),
+                ],
+              );
+            });
       }),
     );
   }

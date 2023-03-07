@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:i_shop_riverpod/core/config/helpers/logger.dart';
+import 'package:i_shop_riverpod/core/constants/global_variables.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppInterceptor extends Interceptor {
@@ -11,11 +12,14 @@ class AppInterceptor extends Interceptor {
       if (token == null) {
         prefs.setString('x-auth-token', '');
       }
+      
     // options.queryParameters["apiKey"] = AuthStrings.apiKey; 
     options.headers = {
       'Content-Type': 'application/json; charset=UTF-8',
       'x-auth-token':
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyZTBlYzA4OTE5ZGJlZGQ3NjE3ZWM2NSIsImlhdCI6MTY1ODkwODU2Mn0.dIs1dpzQU3U1NvjsaYJlsRqy2310JXfsrwUtrOi94UI",
+          token,
+      'Authorization': 'Bearer $payStackApi',
+     
     };
     options.sendTimeout = 30000;
     // debugLog(options.baseUrl + options.path);

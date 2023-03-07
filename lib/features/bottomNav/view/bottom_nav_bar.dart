@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:i_shop_riverpod/core/constants/global_variables.dart';
 import 'package:i_shop_riverpod/features/home/view/home_screen.dart';
+import 'package:i_shop_riverpod/features/profile/view/profile_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class BottomBar extends StatefulWidget {
   static const String routeName = '/actual-home';
@@ -11,31 +13,38 @@ class BottomBar extends StatefulWidget {
 }
 
 class _BottomBarState extends State<BottomBar> {
+  void checkSecondTime() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool("isSecondTime", true);
+  }
+
+  @override
+  void initState() {
+    checkSecondTime();
+    super.initState();
+  }
+
   int _page = 0;
   double bottomBarWidth = 42;
   double bottomBarBorderWidth = 5;
 
 //buyer
   List<Widget> pages = [
-    HomeScreen(),
-    Container(
-      child: Text("Account"),
-    ),
-    Container(
-      child: Text("Chat"),
-    ),
+    const HomeScreen(),
+    // const AccountScreen(),
+    const ProfileScreen(),
   ];
 
 //seller
   List<Widget> sellerPages = [
     Container(
-      child: Text("post screen"),
+      child: const Text("post screen"),
     ),
     Container(
-      child: Text("Analytic screen"),
+      child: const Text("Analytic screen"),
     ),
     Container(
-      child: Text("Order screen"),
+      child: const Text("Order screen"),
     ),
   ];
 
@@ -47,25 +56,11 @@ class _BottomBarState extends State<BottomBar> {
 
   @override
   Widget build(BuildContext context) {
-    // final usermodel = context.watch<AuthViewModel>().userModel;
-
-    int cartLenght = 0;
-
-    // if(usermodel!=null){
-
-    //   cartLenght= usermodel.cart!.length;
-
-    // }
-
-    // final user = Provider.of<AuthViewModel>(context);
+  
 
     return Scaffold(
       body:
-          // user.userModel == null
-          //     ? const Loader()
-          //     : user.isSeller == true
-          //         ? sellerPages[_page]
-          //         :
+      
 
           pages[_page],
       bottomNavigationBar: BottomNavigationBar(
@@ -96,30 +91,8 @@ class _BottomBarState extends State<BottomBar> {
             ),
             label: '',
           ),
-          // ACCOUNT
-          BottomNavigationBarItem(
-            icon: Container(
-              width: bottomBarWidth,
-              decoration: BoxDecoration(
-                border: Border(
-                  top: BorderSide(
-                    color: _page == 1
-                        ? GlobalVariables.selectedNavBarColor
-                        : GlobalVariables.backgroundColor,
-                    width: bottomBarBorderWidth,
-                  ),
-                ),
-              ),
-              child: Icon(
-                // user.isSeller == true
-                //     ? Icons.analytics_outlined
-                //     :
-                Icons.person_outline_outlined,
-              ),
-            ),
-            label: '',
-          ),
-          // CART
+
+          // PROFILE
           BottomNavigationBarItem(
             icon: Container(
               width: bottomBarWidth,
@@ -133,19 +106,8 @@ class _BottomBarState extends State<BottomBar> {
                   ),
                 ),
               ),
-              child: Badge(
-                // elevation: 0,
-                label:
-                    Text("user.isSeller == true ? " " : cartLenght.toString()"),
-                // badgeContent: Text(userCartLen.toString()),
-                backgroundColor: Colors.white,
-                child: Icon(
-                  // user.isSeller == true
-                  //     ? Icons.all_inbox_outlined
-                  //     :
-
-                  Icons.shopping_cart_outlined,
-                ),
+              child: Icon(
+                Icons.person_outline_outlined,
               ),
             ),
             label: '',

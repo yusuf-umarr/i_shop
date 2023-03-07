@@ -1,82 +1,82 @@
 import 'dart:convert';
 
-class User {
-  final String id;
-  final String name;
-  final String email;
-  final String password;
-  final String address;
-  final String type;
-  final String token;
-  final List<dynamic> cart;
+// class User {
+//   final String id;
+//   final String name;
+//   final String email;
+//   final String password;
+//   final String address;
+//   final String type;
+//   final String token;
+//   final List<dynamic> cart;
 
-  User({
-    required this.id,
-    required this.name,
-    required this.email,
-    required this.password,
-    required this.address,
-    required this.type,
-    required this.token,
-    required this.cart,
-  });
+//   User({
+//     required this.id,
+//     required this.name,
+//     required this.email,
+//     required this.password,
+//     required this.address,
+//     required this.type,
+//     required this.token,
+//     required this.cart,
+//   });
 
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'name': name,
-      'email': email,
-      'password': password,
-      'address': address,
-      'type': type,
-      'token': token,
-      'cart': cart,
-    };
-  }
+//   Map<String, dynamic> toMap() {
+//     return {
+//       'id': id,
+//       'name': name,
+//       'email': email,
+//       'password': password,
+//       'address': address,
+//       'type': type,
+//       'token': token,
+//       'cart': cart,
+//     };
+//   }
 
-  factory User.fromMap(Map<String, dynamic> map) {
-    return User(
-      id: map['_id'] ?? '',
-      name: map['name'] ?? '',
-      email: map['email'] ?? '',
-      password: map['password'] ?? '',
-      address: map['address'] ?? '',
-      type: map['type'] ?? '',
-      token: map['token'] ?? '',
-      cart: List<Map<String, dynamic>>.from(
-        map['cart']?.map(
-          (x) => Map<String, dynamic>.from(x),
-        ),
-      ),
-    );
-  }
+//   factory User.fromMap(Map<String, dynamic> map) {
+//     return User(
+//       id: map['_id'] ?? '',
+//       name: map['name'] ?? '',
+//       email: map['email'] ?? '',
+//       password: map['password'] ?? '',
+//       address: map['address'] ?? '',
+//       type: map['type'] ?? '',
+//       token: map['token'] ?? '',
+//       cart: List<Map<String, dynamic>>.from(
+//         map['cart']?.map(
+//           (x) => Map<String, dynamic>.from(x),
+//         ),
+//       ),
+//     );
+//   }
 
-  String toJson() => json.encode(toMap());
+//   String toJson() => json.encode(toMap());
 
-  factory User.fromJson(String source) => User.fromMap(json.decode(source));
+//   factory User.fromJson(String source) => User.fromMap(json.decode(source));
 
-  User copyWith({
-    String? id,
-    String? name,
-    String? email,
-    String? password,
-    String? address,
-    String? type,
-    String? token,
-    List<dynamic>? cart,
-  }) {
-    return User(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      email: email ?? this.email,
-      password: password ?? this.password,
-      address: address ?? this.address,
-      type: type ?? this.type,
-      token: token ?? this.token,
-      cart: cart ?? this.cart,
-    );
-  }
-}
+//   User copyWith({
+//     String? id,
+//     String? name,
+//     String? email,
+//     String? password,
+//     String? address,
+//     String? type,
+//     String? token,
+//     List<dynamic>? cart,
+//   }) {
+//     return User(
+//       id: id ?? this.id,
+//       name: name ?? this.name,
+//       email: email ?? this.email,
+//       password: password ?? this.password,
+//       address: address ?? this.address,
+//       type: type ?? this.type,
+//       token: token ?? this.token,
+//       cart: cart ?? this.cart,
+//     );
+//   }
+// }
 
 
 // To parse this JSON data, do
@@ -99,6 +99,7 @@ class UserModel {
         this.address,
         this.type,
         this.cart,
+        this.profilePic,
         this.v,
     });
 
@@ -110,6 +111,7 @@ class UserModel {
     String? address;
     String? type;
     List<Cart>? cart;
+    var profilePic;
     int? v;
 
     factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
@@ -120,6 +122,7 @@ class UserModel {
         password: json["password"] == null ? null : json["password"],
         address: json["address"] == null ? null : json["address"],
         type: json["type"] == null ? null : json["type"],
+        profilePic: json["profilePic"] == null ? null : json["profilePic"],
         cart: json["cart"] == null ? null : List<Cart>.from(json["cart"].map((x) => Cart.fromJson(x))),
         v: json["__v"] == null ? null : json["__v"],
     );
@@ -132,6 +135,7 @@ class UserModel {
         "password": password == null ? null : password,
         "address": address == null ? null : address,
         "type": type == null ? null : type,
+        "profilePic": profilePic == null ? null : profilePic,
         "cart": cart == null ? null : List<dynamic>.from(cart!.map((x) => x.toJson())),
         "__v": v == null ? null : v,
     };

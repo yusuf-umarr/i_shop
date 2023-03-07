@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:i_shop_riverpod/core/constants/global_variables.dart';
 import 'package:i_shop_riverpod/features/home/widgets/home_app_bar.dart';
@@ -16,8 +15,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,18 +31,16 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: SingleChildScrollView(
         child: Column(
-          children: const [
+          children: [
             AddressBox(),
-            SizedBox(height: 10),
-            TopCategories(),
-            SizedBox(height: 10),
-            CarouselImage(),
-            DealOfDay(),
+            const CarouselImage(),
+            const SizedBox(height: 10),
+            const TopCategories(),
+            const SizedBox(height: 10),
+            const DealOfDay(),
           ],
         ),
       ),
     );
   }
 }
-
-

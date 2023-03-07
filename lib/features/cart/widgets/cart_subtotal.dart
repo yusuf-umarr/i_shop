@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:i_shop_riverpod/features/cart/cart_view_model/cart_view_model.dart';
+import 'package:i_shop_riverpod/features/cart/cart_view_model/notifiers/cart_notifier.dart';
 
 class CartSubtotal extends ConsumerWidget {
   const CartSubtotal({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final cartState = ref.watch(cartViewModel);
+    final cartState = ref.watch(cartNotifier);
     // final user = context.watch<AuthViewModel>().userModel;
     var sum =0.0;
     cartState.cartProducts.map((e) => sum += e.quantity! * e.product!.price!.toDouble()).toList();

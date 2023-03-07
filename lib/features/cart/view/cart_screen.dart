@@ -5,6 +5,7 @@ import 'package:i_shop_riverpod/features/cart/widgets/cart_product_list.dart';
 import 'package:i_shop_riverpod/features/cart/widgets/cart_subtotal.dart';
 import 'package:i_shop_riverpod/features/cart/widgets/proceed_to_by_btn.dart';
 import 'package:i_shop_riverpod/features/home/widgets/address_box.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CartScreen extends StatefulWidget {
   static const String routeName = '/cart-screen';
@@ -15,24 +16,46 @@ class CartScreen extends StatefulWidget {
   State<CartScreen> createState() => _CartScreenState();
 }
 
-class _CartScreenState extends State<CartScreen> {
+class _CartScreenState extends State<CartScreen>
+    with SingleTickerProviderStateMixin {
   void navigateToSearchScreen(String query) {
     // Navigator.pushNamed(context, SearchScreen.routeName, arguments: query);
   }
 
+  String? userToken;
+
+  void checkUserAuth() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    userToken = prefs.getString('x-auth-token');
+  }
+
+  late AnimationController _cartItemController;
+  late Animation<double> _animationCart;
+
+  @override
+  void initState() {
+    super.initState();
+    checkUserAuth();
+
+    _setupCartListAnimation();
+  }
+
+  @override
+  void dispose() {
+    _cartItemController.dispose();
+    super.dispose();
+  }
+
+  void _setupCartListAnimation() {
+    _cartItemController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 400));
+
+    _animationCart = CurvedAnimation(
+        parent: _cartItemController, curve: const Interval(0.0, 1));
+  }
+
   @override
   Widget build(BuildContext context) {
- 
-
-    // print(userCart!.cart!.length);
-    // int sum = 0;
-    // user.cart
-    //     .map((e) => sum += e['quantity'] * e['product']['price'] as int)
-    //     .toList();
-
-    // int sum = 0;
-    // userCart!.cart!.map((e) => sum += e.quantity! * e.product!.price).toList();
-
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(60),
@@ -47,9 +70,9 @@ class _CartScreenState extends State<CartScreen> {
       ),
       body: Column(
         children: [
-          const AddressBox(),
+          AddressBox(),
           const CartSubtotal(),
-          const ProceedToBuyButton(),
+          ProceedToBuyButton(),
           const SizedBox(height: 15),
           Divider(color: Colors.black12.withOpacity(0.08)),
           const SizedBox(height: 5),
@@ -59,6 +82,3 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 }
-
-
-

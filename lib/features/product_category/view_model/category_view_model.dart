@@ -34,6 +34,31 @@ class CategoryViewModel extends StateNotifier<ProductCategoryState> {
       );
     }
   }
+  void fetchAllProductCategory() async {
+    try {
+      final response =
+          await _categoryRepository.fetchAlProductByCategory();
+
+      if (response.success) {
+        state = state.copyWith(
+          productCategory: response.data as List<dynamic>,
+          loadState: NetworkState.success,
+        );
+        return;
+      }
+      print("error here");
+      state = state.copyWith(
+        loadState: NetworkState.error,
+        message: response.message,
+      );
+    } catch (e) {
+         print("error here second");
+      state = state.copyWith(
+        loadState: NetworkState.error,
+        message: e.toString(),
+      );
+    }
+  }
 }
 
 final categoryViewModel =

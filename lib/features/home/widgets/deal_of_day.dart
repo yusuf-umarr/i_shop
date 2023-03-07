@@ -1,5 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i_shop_riverpod/common_widget/shimmer.dart';
 import 'package:i_shop_riverpod/core/utils/enums.dart';
 import 'package:i_shop_riverpod/features/home/view_model/home_view_model.dart';
 
@@ -29,10 +31,6 @@ class _DealOfDayState extends ConsumerState<DealOfDay> {
   }
 
   navigateToDetailScreen(productDeal) {
-    // final provider = Provider.of<HomeViewModel>(context, listen: false);
-
-    // provider.setSelectedProduct(productDeal);
-
     Navigator.pushNamed(
       context,
       ProductDetailScreen.routeName,
@@ -43,10 +41,11 @@ class _DealOfDayState extends ConsumerState<DealOfDay> {
   @override
   Widget build(BuildContext context) {
     return Consumer(builder: (context, ref, child) {
+      final Size size = MediaQuery.of(context).size;
       final dealState = ref.watch(dealOfDayViewModel);
       if (dealState.loadState == NetworkState.loading) {
-        return const Center(
-          child: CircularProgressIndicator(),
+        return Center(
+          child: dealOfDayShimmer(size),
         );
       } else if (dealState.loadState == NetworkState.error) {
         return const Center(
@@ -65,7 +64,6 @@ class _DealOfDayState extends ConsumerState<DealOfDay> {
           ),
           GestureDetector(
             onTap: () {
-              // homeViewModel.setSelectedProduct(productDeal);
               Navigator.pushNamed(
                 context,
                 ProductDetailScreen.routeName,
@@ -76,12 +74,14 @@ class _DealOfDayState extends ConsumerState<DealOfDay> {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(15),
-                  child: Image.network(
-                    dealState.dealOfDayProduct.images![0],
+                  child: CachedNetworkImage(
+                    imageUrl: dealState.dealOfDayProduct.images![0],
+                    fit: BoxFit.fill,
                     height: 235,
-                    fit: BoxFit.fitHeight,
+                    width: size.width * 0.7,
                   ),
                 ),
+
                 Container(
                   padding: const EdgeInsets.only(left: 15),
                   alignment: Alignment.topLeft,
@@ -107,11 +107,11 @@ class _DealOfDayState extends ConsumerState<DealOfDay> {
                         .map<Widget>(
                           (e) => ClipRRect(
                             borderRadius: BorderRadius.circular(15),
-                            child: Image.network(
-                              e,
-                              fit: BoxFit.fitHeight,
+                            child: CachedNetworkImage(
+                              imageUrl: e,
+                              fit: BoxFit.fill,
+                              height: 130,
                               width: 150,
-                              height: 100,
                             ),
                           ),
                         )

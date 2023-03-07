@@ -1,17 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:i_shop_riverpod/features/cart/cart_view_model/cart_view_model.dart';
+import 'package:i_shop_riverpod/features/cart/cart_view_model/notifiers/cart_notifier.dart';
 import 'package:i_shop_riverpod/features/cart/widgets/cart_product.dart';
 
-class CartProductList extends StatelessWidget {
+class CartProductList extends StatefulWidget {
   const CartProductList({
     super.key,
   });
 
   @override
+  State<CartProductList> createState() => _CartProductListState();
+}
+
+class _CartProductListState extends State<CartProductList>
+     {
+  
+  @override
   Widget build(BuildContext context) {
     return Consumer(builder: (context, ref, _) {
-      final productCart = ref.watch(cartViewModel);
+      final productCart = ref.watch(cartNotifier);
       productCart.cartProducts.sort(((a, b) => a.product!.name!
           .toLowerCase()
           .compareTo(b.product!.name!.toLowerCase())));
