@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i_shop_riverpod/core/config/exception/app_exception.dart';
 import 'package:i_shop_riverpod/core/config/response/api_response.dart';
 import 'package:i_shop_riverpod/core/constants/global_variables.dart';
-import 'package:i_shop_riverpod/features/account/model/product_model.dart';
 import 'package:i_shop_riverpod/features/home/services/home_provider.dart';
+import 'package:i_shop_riverpod/features/product_category/models/product_model.dart';
 
 abstract class CategoryRepository {
   Future<ApiResponse<List<dynamic>>> fetchProductByCategory(String category);

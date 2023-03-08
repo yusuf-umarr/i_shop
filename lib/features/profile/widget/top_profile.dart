@@ -25,13 +25,24 @@ class TopProfile extends ConsumerWidget {
         children: [
           Row(
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(50),
-                child: Image.asset(
-                  "assets/images/profilePics.jpeg",
-                  height: 70,
+              if (authUserState.userDataState == UserDataState.success) ...[
+                CircleAvatar(
+                  backgroundImage: NetworkImage(authUserState.user.profilePic !=
+                          null
+                      ? authUserState.user.profilePic
+                      : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"),
+                  radius: 40.0,
                 ),
-              ),
+              ],
+
+              if (authUserState.userDataState != UserDataState.success)
+                CircleAvatar(
+                  backgroundImage: AssetImage(
+                    "assets/images/profilePics.jpeg",
+                  ),
+                  radius: 40.0,
+                ),
+            
               SizedBox(
                 width: defaultPadding,
               ),

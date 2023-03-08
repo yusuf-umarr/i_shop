@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i_shop_riverpod/common_widget/custom_button.dart';
@@ -23,7 +25,7 @@ void showCustomDialog(
 
   final updateKey = GlobalKey<FormState>();
 
-  var images;
+  File? images;
 
   showGeneralDialog(
     context: context,
@@ -37,7 +39,7 @@ void showCustomDialog(
           final state = ref.watch(authViewModel);
 
           if (state.updateUserState == UpdateUserState.success) {
-            print("==========updated sucesssss ===qqqqqqqqq");
+            
             Navigator.of(context).pop();
           }
           return Center(
@@ -93,7 +95,7 @@ void showCustomDialog(
                                 },
                                 child: images != null
                                     ? CircleAvatar(
-                                        backgroundImage: new FileImage(images),
+                                        backgroundImage: new FileImage(images!),
                                         radius: 40.0,
                                       )
                                     : authUserState.user.profilePic != null
@@ -145,7 +147,7 @@ void showCustomDialog(
                                       ? images
                                       : authUserState.user.profilePic != null
                                           ? authUserState.user.profilePic
-                                          : "");
+                                          : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png");
                               if (updateKey.currentState!.validate()) {
                                 ref
                                     .read(authViewModel.notifier)

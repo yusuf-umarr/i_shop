@@ -1,9 +1,8 @@
-
 import 'package:i_shop_riverpod/core/utils/enums.dart';
-import 'package:i_shop_riverpod/features/account/model/product_model.dart';
+import 'package:i_shop_riverpod/features/product_category/models/product_model.dart';
 
 class DealofDayState {
-   final NetworkState loadState;
+  final NetworkState loadState;
   final ProductModel dealOfDayProduct;
   final String? message;
   DealofDayState({
@@ -12,7 +11,6 @@ class DealofDayState {
     required this.message,
   });
 
-   
   factory DealofDayState.initial() {
     return DealofDayState(
       dealOfDayProduct: ProductModel(
@@ -25,14 +23,11 @@ class DealofDayState {
         category: "",
         ratings: [],
         v: null,
-    ),
+      ),
       loadState: NetworkState.loading,
       message: null,
     );
   }
-
-
-
 
   DealofDayState copyWith({
     NetworkState? loadState,

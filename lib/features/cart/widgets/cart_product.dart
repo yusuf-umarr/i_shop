@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:i_shop_riverpod/features/account/model/product_model.dart';
 import 'package:i_shop_riverpod/features/cart/cart_view_model/notifiers/cart_notifier.dart';
 import 'package:i_shop_riverpod/features/cart/model/product_cart_model.dart';
+import 'package:i_shop_riverpod/features/product_category/models/product_model.dart';
 
 class CartProduct extends ConsumerWidget {
   ProductCartModel product;

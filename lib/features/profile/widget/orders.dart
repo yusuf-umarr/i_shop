@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i_shop_riverpod/common_widget/shimmer.dart';
 import 'package:i_shop_riverpod/core/constants/global_variables.dart';
 import 'package:i_shop_riverpod/core/utils/enums.dart';
-import 'package:i_shop_riverpod/features/account/model/order_model.dart';
 import 'package:i_shop_riverpod/features/profile/models/my_order_model.dart';
 import 'package:i_shop_riverpod/features/profile/notifiers/order_notifier.dart';
 import 'package:intl/intl.dart';
@@ -19,7 +18,7 @@ class _OrdersState extends ConsumerState<Orders>
     with SingleTickerProviderStateMixin {
   late AnimationController _orderController;
   late Animation<double> _animationOrder;
-  List<OrderModel>? orderProducts;
+  // List<OrderModel>? orderProducts;
 
   void _setupOrderAnimation() {
     _orderController = AnimationController(
@@ -79,8 +78,6 @@ class _OrdersState extends ConsumerState<Orders>
                 ),
                 itemBuilder: (context, index) {
                   MyOrderModel product = orderState.orderList[index];
-
-                  print(product.orderedAt);
 
                   var date =
                       DateTime.fromMillisecondsSinceEpoch(product.orderedAt);

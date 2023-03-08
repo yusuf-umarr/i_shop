@@ -12,7 +12,7 @@ abstract class AuthRepository {
   Future<ApiResponse<UserModel>> login(UserModel model);
   Future<ApiResponse<UserModel>> register(UserModel model);
   Future<ApiResponse<UserModel>> updateAddress(String address);
-  Future<ApiResponse<UserModel>> updateUser(UserModel address);
+  Future<ApiResponse<UserModel>> updateUser(UserModel model);
   Future<ApiResponse<UserModel>> getUserData();
 }
 
@@ -89,13 +89,20 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<ApiResponse<UserModel>> updateUser(UserModel model) async {
+    var pic = model.profilePic;
+
     final cloudinary = CloudinaryPublic('dikcipece', 'sgcnowwa');
     var imageUrls;
 
-    CloudinaryResponse res = await cloudinary.uploadFile(
-      CloudinaryFile.fromFile(model.profilePic.path, folder: model.name),
-    );
-    imageUrls = res.secureUrl;
+    if (pic.runtimeType == String) {
+      imageUrls = await model.profilePic;
+    } else {
+      CloudinaryResponse res = await cloudinary.uploadFile(
+        CloudinaryFile.fromFile(model.profilePic.path, folder: model.name),
+      );
+      imageUrls = await res.secureUrl;
+    }
+
     try {
       final response = await _dio.post(updateUserPath, data: {
         "name": model.name,
@@ -104,8 +111,6 @@ class AuthRepositoryImpl implements AuthRepository {
         "password": model.password,
         "profilePic": imageUrls,
       });
-
-    
 
       UserModel userModel = UserModel.fromJson(response.data);
 
