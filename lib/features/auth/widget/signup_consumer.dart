@@ -7,19 +7,21 @@ import 'package:i_shop_riverpod/common_widget/custom_textfield.dart';
 import 'package:i_shop_riverpod/core/constants/global_variables.dart';
 import 'package:i_shop_riverpod/core/constants/utils.dart';
 import 'package:i_shop_riverpod/core/utils/enums.dart';
+import 'package:i_shop_riverpod/features/auth/view_model/notifier/signup_notifier.dart';
+import 'package:i_shop_riverpod/features/auth/view_model/notifier/user_notifier.dart';
+import 'package:i_shop_riverpod/features/auth/view_model/states/signup_state.dart';
 import 'package:i_shop_riverpod/features/bottomNav/view/bottom_nav_bar.dart';
 import 'package:i_shop_riverpod/features/payment/view/address_screen.dart';
 import 'package:i_shop_riverpod/features/auth/model/user_model.dart';
-import 'package:i_shop_riverpod/features/auth/view_model/auth_view_model.dart';
-import 'package:i_shop_riverpod/features/auth/view_model/auth_view_state.dart';
 
 Consumer signUpConsumer(signUpFormKey, nameController, emailController,
     passwordController, tottalAmount, prevPage) {
   return Consumer(builder: (context, ref, child) {
-    ref.listen<AuthUserState>(authViewModel, (prev, state) {
-      if (state.registerState == RegisterState.error) {
+    ref.listen<SignupState>(signUpNotifier, (prev, state) {
+      if (state.loadState == NetworkState.error) {
         showSnackBar(context, state.message.toString());
-      } else if (state.registerState == RegisterState.success) {
+      } else if (state.loadState == NetworkState.success) {
+        ref.read(userNotifier.notifier).updateFetchDataRegister();
         showSnackBar(context, state.message.toString());
 
         Timer(const Duration(milliseconds: 300), () {
@@ -27,7 +29,7 @@ Consumer signUpConsumer(signUpFormKey, nameController, emailController,
             Navigator.pushReplacementNamed(context, AddressScreen.routeName,
                 arguments: tottalAmount);
           } else {
-               Navigator.pushReplacementNamed(context, BottomBar.routeName,
+            Navigator.pushReplacementNamed(context, BottomBar.routeName,
                 arguments: tottalAmount);
           }
         });
@@ -50,18 +52,33 @@ Consumer signUpConsumer(signUpFormKey, nameController, emailController,
               hintText: 'Email',
             ),
             const SizedBox(height: 10),
-            CustomTextField(
+            Consumer(builder: (context, ref, _) {
+              final signupState = ref.watch(signUpNotifier);
+
+              return CustomTextField(
                 controller: passwordController,
                 hintText: 'Password',
-                obscureText: true),
+                obscureText: !signupState.isVisible,
+                surfixIcon: IconButton(
+                  onPressed: () {
+                    ref
+                        .read(signUpNotifier.notifier)
+                        .updatedPasswordVisibility();
+                  },
+                  icon: Icon(signupState.isVisible
+                      ? Icons.visibility
+                      : Icons.visibility_off),
+                ),
+              );
+            }),
             const SizedBox(height: 10),
             Consumer(builder: (context, val, _) {
-              final authState = ref.watch(authViewModel);
+              final signupState = ref.watch(signUpNotifier);
 
               return CustomButton(
-                text: authState.loginState == LoginState.idle
+                text: signupState.loadState == NetworkState.idle
                     ? 'Sign Up'
-                    : authState.loginState == LoginState.loading
+                    : signupState.loadState == NetworkState.loading
                         ? 'Please wait'
                         : "Sign Sign Up",
                 onTap: () async {
@@ -73,7 +90,7 @@ Consumer signUpConsumer(signUpFormKey, nameController, emailController,
                         email: emailController.text,
                         password: passwordController.text);
 
-                    ref.read(authViewModel.notifier).userRegister(model);
+                    ref.read(signUpNotifier.notifier).userRegister(model);
                   }
                 },
                 color: GlobalVariables.primaryColor,

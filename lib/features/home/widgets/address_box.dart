@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:i_shop_riverpod/features/auth/view_model/auth_view_model.dart';
+import 'package:i_shop_riverpod/features/auth/view_model/notifier/user_notifier.dart';
 
 class AddressBox extends ConsumerWidget {
    AddressBox({Key? key}) : super(key: key);
@@ -9,7 +9,7 @@ class AddressBox extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-   userAddre= ref.watch(authViewModel).user.address!;
+   userAddre= ref.watch(userNotifier).user.address!;
 
     return Container(
       height: 40,

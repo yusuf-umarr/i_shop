@@ -20,7 +20,7 @@ class CarouselImage extends ConsumerWidget {
             builder: (BuildContext context) =>
                 dealState.loadState == NetworkState.loading
                     ? sliderShimmer(height: 200, width: double.infinity)
-                    : Image.network(
+                    : Image.asset(
                         i,
                         fit: BoxFit.cover,
                         height: 200,

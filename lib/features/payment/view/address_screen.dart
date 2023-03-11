@@ -7,7 +7,7 @@ import 'package:i_shop_riverpod/core/constants/utils.dart';
 import 'package:i_shop_riverpod/core/utils/enums.dart';
 import 'package:i_shop_riverpod/features/cart/cart_view_model/notifiers/cart_notifier.dart';
 import 'package:i_shop_riverpod/features/payment/payment_view_model/payment_view_model.dart';
-import 'package:i_shop_riverpod/features/auth/view_model/auth_view_model.dart';
+import 'package:i_shop_riverpod/features/auth/view_model/notifier/user_notifier.dart';
 import 'package:i_shop_riverpod/features/bottomNav/view/bottom_nav_bar.dart';
 import 'package:i_shop_riverpod/features/payment/payment_view_model/payment_view_model_state.dart';
 import 'package:i_shop_riverpod/features/payment/view/checkout_screen.dart';
@@ -43,8 +43,8 @@ class _AddressScreenState extends ConsumerState<AddressScreen> {
   }
 
   void payPressed() {
-    final userAddr = ref.watch(authViewModel).user.address;
-    final userEmail = ref.watch(authViewModel).user.email;
+    final userAddr = ref.watch(userNotifier).user.address;
+    final userEmail = ref.watch(userNotifier).user.email;
     bool isForm = flatBuildingController.text.isNotEmpty ||
         areaController.text.isNotEmpty ||
         pincodeController.text.isNotEmpty ||
@@ -55,7 +55,7 @@ class _AddressScreenState extends ConsumerState<AddressScreen> {
         addressToBeUsed =
             '${flatBuildingController.text}, ${areaController.text}, ${cityController.text} - ${pincodeController.text}';
 
-        ref.read(authViewModel.notifier).updateUserAddress(addressToBeUsed);
+        ref.read(userNotifier.notifier).updateUserAddress(addressToBeUsed);
 
         ref
             .read(paymentViewModel.notifier)
@@ -65,7 +65,7 @@ class _AddressScreenState extends ConsumerState<AddressScreen> {
       }
     } else if (userAddr != null) {
       addressToBeUsed = userAddr;
-      ref.read(authViewModel.notifier).updateUserAddress(addressToBeUsed);
+      ref.read(userNotifier.notifier).updateUserAddress(addressToBeUsed);
       ref
           .read(paymentViewModel.notifier)
           .checkOut(userEmail!, widget.totalAmount);
@@ -83,7 +83,7 @@ class _AddressScreenState extends ConsumerState<AddressScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authState = ref.watch(authViewModel);
+    final authState = ref.watch(userNotifier);
 
     return Scaffold(
       appBar: PreferredSize(

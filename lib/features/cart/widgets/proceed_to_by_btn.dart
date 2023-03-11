@@ -3,10 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i_shop_riverpod/common_widget/custom_button.dart';
 import 'package:i_shop_riverpod/core/constants/global_variables.dart';
 import 'package:i_shop_riverpod/core/utils/enums.dart';
+import 'package:i_shop_riverpod/features/auth/view_model/notifier/user_notifier.dart';
 import 'package:i_shop_riverpod/features/cart/cart_view_model/notifiers/cart_notifier.dart';
 import 'package:i_shop_riverpod/features/payment/view/address_screen.dart';
 import 'package:i_shop_riverpod/features/auth/view/auth_screen.dart';
-import 'package:i_shop_riverpod/features/auth/view_model/auth_view_model.dart';
 
 class ProceedToBuyButton extends ConsumerWidget {
   ProceedToBuyButton({super.key});
@@ -19,9 +19,9 @@ class ProceedToBuyButton extends ConsumerWidget {
         .map((e) => sum += e.quantity! * e.product!.price!.toDouble())
         .toList();
 
-    final authState = ref.watch(authViewModel);
+    final userState = ref.watch(userNotifier);
     void navigateToAddress() {
-      if (authState.userDataState == UserDataState.success) {
+      if (userState.loadState == NetworkState.success) {
         Navigator.pushNamed(
           context,
           AddressScreen.routeName,

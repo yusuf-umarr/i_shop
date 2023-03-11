@@ -3,16 +3,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i_shop_riverpod/core/constants/global_variables.dart';
 import 'package:i_shop_riverpod/core/utils/enums.dart';
 import 'package:i_shop_riverpod/features/auth/view/auth_screen.dart';
-import 'package:i_shop_riverpod/features/auth/view_model/auth_view_model.dart';
+import 'package:i_shop_riverpod/features/auth/view_model/notifier/user_notifier.dart';
 
 class TopProfile extends ConsumerWidget {
-  const TopProfile({
-    super.key,
-  });
+  TopProfile({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final authUserState = ref.watch(authViewModel);
+    final authUserState = ref.watch(userNotifier);
+
+    final Size size = MediaQuery.of(context).size;
 
     return Container(
       padding: EdgeInsets.symmetric(
@@ -25,34 +25,36 @@ class TopProfile extends ConsumerWidget {
         children: [
           Row(
             children: [
-              if (authUserState.userDataState == UserDataState.success) ...[
+              if (authUserState.loadState == NetworkState.success) ...[
                 CircleAvatar(
-                  backgroundImage: NetworkImage(authUserState.user.profilePic !=
-                          null
-                      ? authUserState.user.profilePic
-                      : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"),
+                  backgroundImage: NetworkImage(
+                      authUserState.user.profilePic != null
+                          ? authUserState.user.profilePic
+                          : defaultPic),
                   radius: 40.0,
                 ),
               ],
-
-              if (authUserState.userDataState != UserDataState.success)
+              if (authUserState.loadState != NetworkState.success)
                 CircleAvatar(
                   backgroundImage: AssetImage(
-                    "assets/images/profilePics.jpeg",
+                    defaultPic,
                   ),
                   radius: 40.0,
                 ),
-            
               SizedBox(
                 width: defaultPadding,
               ),
-              if (authUserState.userDataState == UserDataState.success)
+              if (authUserState.loadState == NetworkState.success)
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      authUserState.user.name!,
-                      style: Theme.of(context).textTheme.headlineMedium,
+                    SizedBox(
+                      width: size.width * 0.55,
+                      child: Text(
+                        authUserState.user.name!,
+                        style: Theme.of(context).textTheme.headlineMedium,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                     SizedBox(
                       height: defaultPadding / 2,
@@ -87,7 +89,7 @@ class TopProfile extends ConsumerWidget {
                     )
                   ],
                 ),
-              if (authUserState.userDataState != UserDataState.success)
+              if (authUserState.loadState != NetworkState.success)
                 GestureDetector(
                     onTap: () {
                       Navigator.pushNamed(context, AuthScreen.routeName,

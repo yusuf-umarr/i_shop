@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-// String uri = 'http://192.168.43.141:3000';
 
 String baseUrl = 'https://i-shop-server.netlify.app/.netlify/functions/api/';
 String dealOdDayPath = 'product/deal-of-day/';
@@ -17,6 +16,9 @@ String postOrderPath = 'user/order-product';
 String initializedUrl = 'https://api.paystack.co/transaction/initialize';
 String payStackApi = 'sk_test_73669334a5577c3de3519affd0b44c11015233b0';
 String paymentUrl = 'https://paystack.shop/i-shop';
+String defaultPic = "assets/images/profilePics.jpeg";
+String profilePic = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
+String netError = "assets/images/internet-error.png";
 
 class GlobalVariables {
   // COLORS
@@ -39,33 +41,33 @@ class GlobalVariables {
 
   // STATIC IMAGES
   static const List<String> carouselImages = [
-    'https://images-eu.ssl-images-amazon.com/images/G/31/img21/Wireless/WLA/TS/D37847648_Accessories_savingdays_Jan22_Cat_PC_1500.jpg',
-    'https://images-eu.ssl-images-amazon.com/images/G/31/img2021/Vday/bwl/English.jpg',
-    'https://images-eu.ssl-images-amazon.com/images/G/31/img22/Wireless/AdvantagePrime/BAU/14thJan/D37196025_IN_WL_AdvantageJustforPrime_Jan_Mob_ingress-banner_1242x450.jpg',
-    'https://images-na.ssl-images-amazon.com/images/G/31/Symbol/2020/00NEW/1242_450Banners/PL31_copy._CB432483346_.jpg',
-    'https://images-na.ssl-images-amazon.com/images/G/31/img21/shoes/September/SSW/pc-header._CB641971330_.jpg',
+    "assets/images/store4.jpg",
+    "assets/images/store1.jpeg",
+    "assets/images/store2.jpeg",
+    "assets/images/store3.jpeg",
+    "assets/images/store5.jpg",
   ];
 
   static const List<Map<String, String>> categoryImages = [
     {
       'title': 'All',
-      'image': 'assets/images/fashion.jpeg',
+      // 'image': 'assets/images/fashion.jpeg',
     },
     {
       'title': 'Fashion',
-      'image': 'assets/images/fashion.jpeg',
+      // 'image': 'assets/images/fashion.jpeg',
     },
     {
       'title': 'Mobiles',
-      'image': 'assets/images/mobiles.jpeg',
+      // 'image': 'assets/images/mobiles.jpeg',
     },
     {
       'title': 'Essentials',
-      'image': 'assets/images/essentials.jpeg',
+      // 'image': 'assets/images/essentials.jpeg',
     },
     {
       'title': 'Appliances',
-      'image': 'assets/images/appliances.jpeg',
+      // 'image': 'assets/images/appliances.jpeg',
     },
   ];
 }

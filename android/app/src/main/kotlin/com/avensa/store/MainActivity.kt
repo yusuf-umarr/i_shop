@@ -1,4 +1,4 @@
-package com.example.i_shop_riverpod
+package com.avensa.store
 
 import io.flutter.embedding.android.FlutterActivity
 

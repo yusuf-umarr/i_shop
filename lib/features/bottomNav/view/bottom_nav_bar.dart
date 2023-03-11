@@ -31,22 +31,10 @@ class _BottomBarState extends State<BottomBar> {
 //buyer
   List<Widget> pages = [
     const HomeScreen(),
-    // const AccountScreen(),
     const ProfileScreen(),
   ];
 
-//seller
-  List<Widget> sellerPages = [
-    Container(
-      child: const Text("post screen"),
-    ),
-    Container(
-      child: const Text("Analytic screen"),
-    ),
-    Container(
-      child: const Text("Order screen"),
-    ),
-  ];
+
 
   void updatePage(int page) {
     setState(() {

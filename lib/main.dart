@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:i_shop_riverpod/core/config/route/route.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i_shop_riverpod/core/config/theme/app_theme.dart';
-import 'package:i_shop_riverpod/features/auth/view_model/auth_view_model.dart';
+import 'package:i_shop_riverpod/features/auth/view_model/notifier/user_notifier.dart';
 import 'package:i_shop_riverpod/features/bottomNav/view/bottom_nav_bar.dart';
 import 'package:i_shop_riverpod/features/bottomNav/view/onboard_scren.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,7 +28,7 @@ class MyApp extends ConsumerStatefulWidget {
 class _MyAppState extends ConsumerState<MyApp> {
   @override
   void initState() {
-    ref.read(authViewModel.notifier).fetchUserData();
+    ref.read(userNotifier.notifier).fetchUserData();
     super.initState();
   }
 

@@ -4,71 +4,45 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i_shop_riverpod/core/utils/enums.dart';
 import 'package:i_shop_riverpod/features/auth/model/user_model.dart';
 import 'package:i_shop_riverpod/features/auth/service/auth_repository.dart';
-import 'package:i_shop_riverpod/features/auth/view_model/auth_view_state.dart';
+import 'package:i_shop_riverpod/features/auth/view_model/notifier/signin_notifier.dart';
+import 'package:i_shop_riverpod/features/auth/view_model/notifier/signup_notifier.dart';
+import 'package:i_shop_riverpod/features/auth/view_model/states/user_state.dart';
 
-class AuthViewModel extends StateNotifier<AuthUserState> {
-  AuthViewModel(this._authRepository) : super(AuthUserState.initial());
+class UserNotifier extends StateNotifier<UserState> {
+  UserNotifier(this._authRepository, this.ref) : super(UserState.initial());
 
   final AuthRepository _authRepository;
+  final StateNotifierProviderRef ref;
 
-  void userLogin(UserModel model) async {
-    state = state.copyWith(loginState: LoginState.loading);
+  void updateFetchDataLogin() async {
+    final signInState = ref.read(signInNotifier.notifier).state;
+
     try {
-      final response = await _authRepository.login(model);
-
-      if (response.success) {
-        state = state.copyWith(
-          user: response.data,
-          loadState: NetworkState.success,
-          loginState: LoginState.success,
-          userDataState: UserDataState.success,
-          message: response.message,
-        );
-        return;
-      }
       state = state.copyWith(
-        loadState: NetworkState.error,
-        message: response.message,
-        loginState: LoginState.error,
-        userDataState: UserDataState.error,
+        user: signInState.user,
+        loadState: signInState.loadState,
       );
+      return;
     } catch (e) {
       state = state.copyWith(
         loadState: NetworkState.error,
-        loginState: LoginState.error,
-        userDataState: UserDataState.error,
         message: e.toString(),
       );
     }
   }
 
-  void userRegister(UserModel model) async {
-    state = state.copyWith(
-      registerState: RegisterState.loading,
-    );
-    try {
-      final response = await _authRepository.register(model);
+  void updateFetchDataRegister() async {
+    final signUpState = ref.read(signUpNotifier.notifier).state;
 
-      if (response.success) {
-        state = state.copyWith(
-          user: response.data,
-          loadState: NetworkState.success,
-          registerState: RegisterState.success,
-          userDataState: UserDataState.success,
-        );
-        return;
-      }
+    try {
       state = state.copyWith(
-        loadState: NetworkState.error,
-        message: response.message,
-        registerState: RegisterState.error,
-        userDataState: UserDataState.error,
+        user: signUpState.user,
+        loadState: signUpState.loadState,
       );
+      return;
     } catch (e) {
       state = state.copyWith(
         loadState: NetworkState.error,
-        registerState: RegisterState.error,
-        userDataState: UserDataState.error,
         message: e.toString(),
       );
     }
@@ -82,26 +56,27 @@ class AuthViewModel extends StateNotifier<AuthUserState> {
         state = state.copyWith(
           user: response.data,
           loadState: NetworkState.success,
-          userAddessState: UserAddressState.success,
         );
         return;
       }
       state = state.copyWith(
         loadState: NetworkState.error,
         message: response.message,
-        userAddessState: UserAddressState.error,
       );
     } catch (e) {
       state = state.copyWith(
         loadState: NetworkState.error,
-        userAddessState: UserAddressState.error,
         message: e.toString(),
       );
     }
   }
 
   void updateUserDetail(UserModel model) async {
+    state = state.copyWith(
+      updateUserState: UpdateUserState.loading,
+    );
     try {
+      print(state.updateUserState);
       final response = await _authRepository.updateUser(model);
 
       if (response.success) {
@@ -141,19 +116,17 @@ class AuthViewModel extends StateNotifier<AuthUserState> {
         state = state.copyWith(
           user: response.data,
           loadState: NetworkState.success,
-          userDataState: UserDataState.success,
         );
         return;
       }
     } catch (e) {
       state = state.copyWith(
         loadState: NetworkState.error,
-        userDataState: UserDataState.error,
         message: e.toString(),
       );
     }
   }
 }
 
-final authViewModel = StateNotifierProvider<AuthViewModel, AuthUserState>(
-    (ref) => AuthViewModel(ref.read(authRepository)));
+final userNotifier = StateNotifierProvider<UserNotifier, UserState>(
+    (ref) => UserNotifier(ref.read(authRepository), ref));

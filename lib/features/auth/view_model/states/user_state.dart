@@ -2,28 +2,20 @@
 import 'package:i_shop_riverpod/core/utils/enums.dart';
 import 'package:i_shop_riverpod/features/auth/model/user_model.dart';
 
-class AuthUserState {
+class UserState {
   final NetworkState loadState;
   final UserModel user;
   final String? message;
-  final LoginState loginState;
-  final RegisterState registerState;
-  final UserAddressState userAddessState;
-  final UserDataState userDataState;
   final UpdateUserState updateUserState;
-  AuthUserState({
+  UserState({
     required this.loadState,
     required this.user,
     required this.message,
-    required this.loginState,
-    required this.registerState,
-    required this.userAddessState,
-    required this.userDataState,
     required this.updateUserState,
   });
 
-  factory AuthUserState.initial() {
-    return AuthUserState(
+  factory UserState.initial() {
+    return UserState(
       user: UserModel(
         id: "",
         token: "",
@@ -37,40 +29,20 @@ class AuthUserState {
       ),
       loadState: NetworkState.loading,
       message: null,
-      loginState: LoginState.idle,
-      registerState: RegisterState.idle,
-      userAddessState: UserAddressState.idle,
-      userDataState: UserDataState.idle,
       updateUserState: UpdateUserState.idle,
     );
   }
 
-
-
-
-
-
-
-
-
-  AuthUserState copyWith({
+  UserState copyWith({
     NetworkState? loadState,
     UserModel? user,
     String? message,
-    LoginState? loginState,
-    RegisterState? registerState,
-    UserAddressState? userAddessState,
-    UserDataState? userDataState,
     UpdateUserState? updateUserState,
   }) {
-    return AuthUserState(
+    return UserState(
       loadState: loadState ?? this.loadState,
       user: user ?? this.user,
       message: message ?? this.message,
-      loginState: loginState ?? this.loginState,
-      registerState: registerState ?? this.registerState,
-      userAddessState: userAddessState ?? this.userAddessState,
-      userDataState: userDataState ?? this.userDataState,
       updateUserState: updateUserState ?? this.updateUserState,
     );
   }

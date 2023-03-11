@@ -88,7 +88,15 @@ class _ProductCategoryScreenState extends ConsumerState<ProductCategoryScreen>
           return productCategoryShimmer(size: size);
         } else if (categoryState.loadState == NetworkState.error) {
           return Center(
-            child: Text(categoryState.message.toString()),
+            child: Column(
+            children: [
+              Image.asset(
+                netError,
+                height: 130,
+              ),
+              Text(categoryState.message.toString()),
+            ],
+          ),
           );
         }
         return AnimatedBuilder(

@@ -9,7 +9,10 @@ import 'package:i_shop_riverpod/features/cart/cart_view_model/notifiers/cart_not
 class AuthScreen extends ConsumerStatefulWidget {
   final String prevPage;
   static const String routeName = '/auth-screen';
-  const AuthScreen( {Key? key,required this.prevPage,}) : super(key: key);
+  const AuthScreen({
+    Key? key,
+    required this.prevPage,
+  }) : super(key: key);
 
   @override
   ConsumerState<AuthScreen> createState() => _AuthScreenState();
@@ -30,8 +33,6 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
     passwordController.dispose();
     nameController.dispose();
   }
-
-  bool isWait = false;
 
   @override
   Widget build(BuildContext context) {
@@ -81,8 +82,14 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                   ),
                 ),
                 if (_auth == Auth.signup)
-                  signUpConsumer(signUpFormKey, nameController, emailController,
-                      passwordController, totalAmount, widget.prevPage,),
+                  signUpConsumer(
+                    signUpFormKey,
+                    nameController,
+                    emailController,
+                    passwordController,
+                    totalAmount,
+                    widget.prevPage,
+                  ),
                 ListTile(
                   tileColor: _auth == Auth.signin
                       ? GlobalVariables.backgroundColor
@@ -105,8 +112,13 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                   ),
                 ),
                 if (_auth == Auth.signin)
-                  signInConsumer(signInFormKey, emailController,
-                      passwordController, totalAmount, widget.prevPage,),
+                  signInConsumer(
+                    signInFormKey,
+                    emailController,
+                    passwordController,
+                    totalAmount,
+                    widget.prevPage,
+                  ),
               ],
             ),
           ),

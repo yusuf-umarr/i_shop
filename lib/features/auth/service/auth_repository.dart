@@ -127,14 +127,7 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<ApiResponse<UserModel>> getUserData() async {
     try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? token = prefs.getString('x-auth-token');
-
       var userRes;
-
-      if (token == null) {
-        prefs.setString('x-auth-token', '');
-      }
 
       Response<bool> tokenRes = await _dio.post(validateTokenPath);
 

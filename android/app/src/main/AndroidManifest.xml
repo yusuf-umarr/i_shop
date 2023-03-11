@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.i_shop_riverpod">
+    package="com.avensa.store">
    <application
-        android:label="i_shop_riverpod"
+        android:label="Avensa store"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

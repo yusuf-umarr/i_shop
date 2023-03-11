@@ -4,7 +4,8 @@ import 'package:i_shop_riverpod/common_widget/custom_button.dart';
 import 'package:i_shop_riverpod/core/constants/global_variables.dart';
 import 'package:i_shop_riverpod/core/utils/enums.dart';
 import 'package:i_shop_riverpod/features/auth/view/auth_screen.dart';
-import 'package:i_shop_riverpod/features/auth/view_model/auth_view_model.dart';
+import 'package:i_shop_riverpod/features/auth/view_model/notifier/user_notifier.dart';
+import 'package:i_shop_riverpod/features/bottomNav/view/bottom_nav_bar.dart';
 import 'package:i_shop_riverpod/features/profile/widget/edit_profile_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -21,21 +22,21 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
   void logOut(context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove('x-auth-token');
+    // Navigator.pop(context);
 
     Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
-            builder: (BuildContext context) => AuthScreen(
-                  prevPage: 'profile-screen',
+            builder: (BuildContext context) => BottomBar(
                 )),
-        ModalRoute.withName('/auth-screen'));
+        ModalRoute.withName('/actual-home'));
   }
 
   @override
   Widget build(
     BuildContext context,
   ) {
-    final authUserState = ref.watch(authViewModel);
+    final authUserState = ref.watch(userNotifier);
 
     return Scaffold(
         appBar: PreferredSize(
@@ -77,9 +78,7 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
                           onPressed: () {
                             showCustomDialog(
                                 context: context,
-                                onValue: (_) {
-                                 
-                                },
+                                onValue: (_) {},
                                 authUserState: authUserState,
                                 ref: ref);
                           },

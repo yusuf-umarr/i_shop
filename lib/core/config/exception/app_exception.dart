@@ -1,14 +1,10 @@
-
 import 'package:dio/dio.dart';
 import '../helpers/logger.dart';
 import '../response/api_response.dart';
 
 class AppException {
   //HANDLE ERROR
-  static ApiResponse<T> handleError<T>(
-    DioError e, {
-    T? data,
-  }) {
+  static ApiResponse<T> handleError<T>(DioError e, {T? data}) {
     if (e.type == DioErrorType.response && e.response != null) {
       if (e.response!.statusCode! == 400) {
         return ApiResponse(
@@ -54,5 +50,3 @@ class AppException {
     return "An error occurred";
   }
 }
-
-

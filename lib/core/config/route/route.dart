@@ -5,15 +5,14 @@ import 'package:i_shop_riverpod/features/auth/view/auth_screen.dart';
 import 'package:i_shop_riverpod/features/cart/view/cart_screen.dart';
 import 'package:i_shop_riverpod/features/payment/view/checkout_screen.dart';
 import 'package:i_shop_riverpod/features/profile/view/setting_sceen.dart';
-// import 'package:i_shop_riverpod/features/product_category/view/category_deals_screen.dart';
-
 import '../../../features/product_category/view/category_deals_screen.dart';
 import '../../../features/product_details/view/product_details_screen.dart';
 
 Route<dynamic> generateRoute(RouteSettings routeSettings) {
   switch (routeSettings.name) {
     case AuthScreen.routeName:
-      String prevPage = "";
+      var prevPage = routeSettings.arguments as String;
+
       return MaterialPageRoute(
         settings: routeSettings,
         builder: (_) => AuthScreen(
@@ -21,21 +20,13 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
         ),
       );
 
-    // case HomeScreen.routeName:
-    //   return MaterialPageRoute(
-    //     settings: routeSettings,
-    //     builder: (_) => const HomeScreen(),
-    //   );
+   
     case BottomBar.routeName:
       return MaterialPageRoute(
         settings: routeSettings,
         builder: (_) => const BottomBar(),
       );
-    // case AddProductScreen.routeName:
-    //   return MaterialPageRoute(
-    //     settings: routeSettings,
-    //     builder: (_) => const AddProductScreen(),
-    //   );
+  
 
     case ProductCategoryScreen.routeName:
       var category = routeSettings.arguments as String;
@@ -45,14 +36,7 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
           category: category,
         ),
       );
-    // case SearchScreen.routeName:
-    //   var searchQuery = routeSettings.arguments as String;
-    //   return MaterialPageRoute(
-    //     settings: routeSettings,
-    //     builder: (_) => SearchScreen(
-    //       searchQuery: searchQuery,
-    //     ),
-    //   );
+  
     case ProductDetailScreen.routeName:
       var product = routeSettings.arguments as dynamic;
       return MaterialPageRoute(
@@ -85,14 +69,7 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
           totalAmount: totalAmount.toString(),
         ),
       );
-    // case OrderDetailScreen.routeName:
-    //   var order = routeSettings.arguments as OrderModel;
-    //   return MaterialPageRoute(
-    //     settings: routeSettings,
-    //     builder: (_) => OrderDetailScreen(
-    //       order: order,
-    //     ),
-    //   );
+   
     default:
       return MaterialPageRoute(
         settings: routeSettings,

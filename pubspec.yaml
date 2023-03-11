@@ -39,19 +39,15 @@ dependencies:
   dio: ^4.0.6
   shared_preferences: ^2.0.15
   file_picker:
-  badges: ^2.0.3
   carousel_slider: ^4.1.1
-  dotted_border: ^2.0.0+2
   cloudinary_public: ^0.11.0
   flutter_rating_bar: ^4.0.0
   intl: ^0.17.0
-  charts_flutter: ^0.12.0
-  # webview_flutter: ^4.0.5
-  # webview_flutter_wkwebview: ^2.9.5
   webview_flutter: 4.0.5
   shimmer: ^2.0.0
   cached_network_image: ^3.2.3
   lottie:
+  change_app_package_name: ^1.1.0
 
 
 
@@ -59,7 +55,13 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_launcher_icons: ^0.10.0
+  # flutter_launcher_icons: 
+
+  flutter_launcher_name:
+
+flutter_launcher_name:
+  name: "Avensa store"
+
 
 flutter_icons:
   image_path: "assets/images/avensa-logo.png"
@@ -89,6 +91,7 @@ flutter:
   assets:
     - assets/images/
     - assets/
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

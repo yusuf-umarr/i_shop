@@ -8,7 +8,7 @@ import 'package:i_shop_riverpod/core/constants/global_variables.dart';
 import 'package:i_shop_riverpod/core/constants/utils.dart';
 import 'package:i_shop_riverpod/core/utils/enums.dart';
 import 'package:i_shop_riverpod/features/auth/model/user_model.dart';
-import 'package:i_shop_riverpod/features/auth/view_model/auth_view_model.dart';
+import 'package:i_shop_riverpod/features/auth/view_model/notifier/user_notifier.dart';
 
 void showCustomDialog(
     {required BuildContext context,
@@ -36,17 +36,19 @@ void showCustomDialog(
     pageBuilder: (_, __, ___) {
       return StatefulBuilder(builder: (context, setState) {
         return Consumer(builder: (context, ref, _) {
-          final state = ref.watch(authViewModel);
+          final state = ref.watch(userNotifier);
 
           if (state.updateUserState == UpdateUserState.success) {
-            
-            Navigator.of(context).pop();
+            Future.delayed(Duration(seconds: 1), () {
+              Navigator.of(context).pop();
+            });
           }
           return Center(
             child: Container(
               height: 620,
               margin: const EdgeInsets.symmetric(horizontal: 16),
-              padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
+              // padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24)
+              //     .copyWith(top: 0),
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.95),
                 borderRadius: BorderRadius.circular(40),
@@ -70,101 +72,116 @@ void showCustomDialog(
                   children: [
                     Form(
                       key: updateKey,
-                      child: Column(
-                        children: [
-                          const Text(
-                            "Update Profile",
-                            style: TextStyle(
-                              fontSize: 32,
-                              fontFamily: "Poppins",
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          SizedBox(
-                            height: defaultPadding * 1.2,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                      child: SingleChildScrollView(
+                        child: Padding(
+                          padding: const EdgeInsets.all(defaultPadding),
+                          child: Column(
                             children: [
-                              GestureDetector(
-                                onTap: () async {
-                                  var res = pickSingleImage();
+                              SizedBox(
+                                height: defaultPadding,
+                              ),
+                              const Text(
+                                "Update Profile",
+                                style: TextStyle(
+                                  fontSize: 32,
+                                  fontFamily: "Poppins",
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              SizedBox(
+                                height: defaultPadding * 1.2,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  GestureDetector(
+                                    onTap: () async {
+                                      var res = pickSingleImage();
 
-                                  images = await res;
-                                  setState(() {});
-                                },
-                                child: images != null
-                                    ? CircleAvatar(
-                                        backgroundImage: new FileImage(images!),
-                                        radius: 40.0,
-                                      )
-                                    : authUserState.user.profilePic != null
+                                      images = await res;
+                                      setState(() {});
+                                    },
+                                    child: images != null
                                         ? CircleAvatar(
-                                            backgroundImage: NetworkImage(
-                                                authUserState.user.profilePic),
+                                            backgroundImage:
+                                                new FileImage(images!),
                                             radius: 40.0,
                                           )
-                                        : CircleAvatar(
-                                            backgroundImage: AssetImage(
-                                              "assets/images/profilePics.jpeg",
-                                            ),
-                                            radius: 40.0,
-                                          ),
+                                        : authUserState.user.profilePic != null
+                                            ? CircleAvatar(
+                                                backgroundImage: NetworkImage(
+                                                    authUserState
+                                                        .user.profilePic),
+                                                radius: 40.0,
+                                              )
+                                            : CircleAvatar(
+                                                backgroundImage: AssetImage(
+                                                  defaultPic,
+                                                ),
+                                                radius: 40.0,
+                                              ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: defaultPadding),
+                              CustomTextField(
+                                controller: nameController,
+                                hintText: 'Name',
+                              ),
+                              SizedBox(height: defaultPadding),
+                              CustomTextField(
+                                controller: emailController,
+                                hintText: 'Email',
+                              ),
+                              SizedBox(height: defaultPadding),
+                              CustomTextField(
+                                controller: addressController,
+                                hintText: 'Address',
+                              ),
+                              SizedBox(height: defaultPadding),
+                              CustomTextField(
+                                controller: passwordController,
+                                hintText: 'Password',
+                                obscureText: true,
+                              ),
+                              SizedBox(height: defaultPadding),
+                              CustomButton(
+                                text: state.updateUserState ==
+                                        UpdateUserState.loading
+                                    ? "Please wait..."
+                                    : 'Done',
+                                onTap: () {
+                                  UserModel user = UserModel(
+                                      name: nameController.text,
+                                      email: emailController.text,
+                                      address: addressController.text,
+                                      password: passwordController.text,
+                                      profilePic: images != null
+                                          ? images
+                                          : authUserState.user.profilePic !=
+                                                  null
+                                              ? authUserState.user.profilePic
+                                              : profilePic);
+                                  if (updateKey.currentState!.validate()) {
+                                    ref
+                                        .read(userNotifier.notifier)
+                                        .updateUserDetail(user);
+                                  }
+                                },
                               ),
                             ],
                           ),
-                          SizedBox(height: defaultPadding),
-                          CustomTextField(
-                            controller: nameController,
-                            hintText: 'Name',
-                          ),
-                          SizedBox(height: defaultPadding),
-                          CustomTextField(
-                            controller: emailController,
-                            hintText: 'Email',
-                          ),
-                          SizedBox(height: defaultPadding),
-                          CustomTextField(
-                            controller: addressController,
-                            hintText: 'Address',
-                          ),
-                          SizedBox(height: defaultPadding),
-                          CustomTextField(
-                            controller: passwordController,
-                            hintText: 'Password',
-                            obscureText: true,
-                          ),
-                          SizedBox(height: defaultPadding),
-                          CustomButton(
-                            text: 'Done',
-                            onTap: () {
-                              UserModel user = UserModel(
-                                  name: nameController.text,
-                                  email: emailController.text,
-                                  address: addressController.text,
-                                  password: passwordController.text,
-                                  profilePic: images != null
-                                      ? images
-                                      : authUserState.user.profilePic != null
-                                          ? authUserState.user.profilePic
-                                          : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png");
-                              if (updateKey.currentState!.validate()) {
-                                ref
-                                    .read(authViewModel.notifier)
-                                    .updateUserDetail(user);
-                              }
-                            },
-                          ),
-                        ],
+                        ),
                       ),
                     ),
-                    const Positioned(
-                      left: 0,
-                      right: 0,
-                      bottom: -48,
-                      child: CircleAvatar(
-                        radius: 16,
-                        backgroundColor: Colors.white,
+                    Positioned(
+                      // left: 0,
+                      right: 5,
+                      // bottom: -50,
+                      child: FloatingActionButton.small(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
                         child: Icon(
                           Icons.close,
                           size: 20,

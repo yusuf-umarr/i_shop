@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i_shop_riverpod/common_widget/shimmer.dart';
+import 'package:i_shop_riverpod/core/constants/global_variables.dart';
 import 'package:i_shop_riverpod/core/utils/enums.dart';
 import 'package:i_shop_riverpod/features/home/view_model/home_view_model.dart';
 
@@ -48,8 +49,16 @@ class _DealOfDayState extends ConsumerState<DealOfDay> {
           child: dealOfDayShimmer(size),
         );
       } else if (dealState.loadState == NetworkState.error) {
-        return const Center(
-          child: Text("An error occurred"),
+        return Center(
+          child: Column(
+            children: [
+              Image.asset(
+                netError,
+                height: 130,
+              ),
+              Text(dealState.message.toString()),
+            ],
+          ),
         );
       }
       return Column(
@@ -81,7 +90,6 @@ class _DealOfDayState extends ConsumerState<DealOfDay> {
                     width: size.width * 0.7,
                   ),
                 ),
-
                 Container(
                   padding: const EdgeInsets.only(left: 15),
                   alignment: Alignment.topLeft,
