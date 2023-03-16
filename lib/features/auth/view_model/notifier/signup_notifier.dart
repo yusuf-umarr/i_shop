@@ -9,10 +9,10 @@ class SignUpNofiier extends StateNotifier<SignupState> {
 
   final AuthRepository _authRepository;
 
-   void userRegister(UserModel model) async {
-    // state = state.copyWith(
-    //       loadState: NetworkState.loading,
-    // );
+  Future<void> userRegister(UserModel model) async {
+    state = state.copyWith(
+          loadState: NetworkState.loading, 
+    );
     try {
       final response = await _authRepository.register(model);
 
@@ -20,19 +20,18 @@ class SignUpNofiier extends StateNotifier<SignupState> {
         state = state.copyWith(
           user: response.data,
           loadState: NetworkState.success,
-          // userDataState: UserDataState.success,
+          message: response.message,
+
         );
         return;
       }
       state = state.copyWith(
         loadState: NetworkState.error,
         message: response.message,
-        // userDataState: UserDataState.error,
       );
     } catch (e) {
       state = state.copyWith(
         loadState: NetworkState.error,
-        // userDataState: UserDataState.error,
         message: e.toString(),
       );
     }

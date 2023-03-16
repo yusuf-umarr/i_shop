@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i_shop_riverpod/core/utils/enums.dart';
 import 'package:i_shop_riverpod/features/auth/model/user_model.dart';
@@ -12,7 +11,7 @@ class UserNotifier extends StateNotifier<UserState> {
   UserNotifier(this._authRepository, this.ref) : super(UserState.initial());
 
   final AuthRepository _authRepository;
-  final StateNotifierProviderRef ref;
+  final StateNotifierProviderRef ref;  //===========>this 
 
   void updateFetchDataLogin() async {
     final signInState = ref.read(signInNotifier.notifier).state;
@@ -76,7 +75,6 @@ class UserNotifier extends StateNotifier<UserState> {
       updateUserState: UpdateUserState.loading,
     );
     try {
-      print(state.updateUserState);
       final response = await _authRepository.updateUser(model);
 
       if (response.success) {
@@ -86,7 +84,7 @@ class UserNotifier extends StateNotifier<UserState> {
           updateUserState: UpdateUserState.success,
         );
 
-        Future.delayed(Duration(seconds: 1), () {
+        Future.delayed(const Duration(seconds: 1), () {
           state = state.copyWith(
             updateUserState: UpdateUserState.idle,
           );

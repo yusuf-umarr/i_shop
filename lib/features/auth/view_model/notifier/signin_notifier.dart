@@ -9,10 +9,9 @@ class SignInNofiier extends StateNotifier<SignInState> {
 
   final AuthRepository _authRepository;
 
-  void userLogin(UserModel model) async {
+  Future<void> userLogin(UserModel model) async { 
     state = state.copyWith(loadState: NetworkState.loading);
     try {
-      print(state.loadState);
       final response = await _authRepository.login(model);
 
       if (response.success) {
@@ -38,7 +37,6 @@ class SignInNofiier extends StateNotifier<SignInState> {
 
   void updatedPasswordVisibility() {
     state = state.copyWith(isVisible: !state.isVisible);
-    print(state.isVisible);
   }
 }
 
